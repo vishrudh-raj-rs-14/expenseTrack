@@ -1,26 +1,179 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens ─────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Backgrounds */
+  --bg: #F9F6F1;
+  --surface: #FFFFFF;
+  --surface-2: #F2EDE5;
+  --surface-3: #E8E0D4;
+
+  /* Text */
+  --text-1: #18161A;
+  --text-2: #6B6370;
+  --text-3: #A89FA8;
+
+  /* Borders */
+  --border: #EDE8E0;
+  --border-strong: #D4CEC6;
+
+  /* Accent — terracotta/amber */
+  --accent: #D4622D;
+  --accent-2: #E8834A;
+  --accent-bg: #FAEDE7;
+
+  /* Semantic */
+  --income: #2A6B4F;
+  --income-bg: #E6F4EE;
+  --expense: #B91C1C;
+  --expense-bg: #FEE9E9;
+  --investment: #1D4ED8;
+  --investment-bg: #EEF2FF;
+
+  /* UI */
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+
+  --shadow-sm: 0 1px 3px 0 rgba(24,22,26,0.06), 0 1px 2px -1px rgba(24,22,26,0.04);
+  --shadow: 0 4px 12px 0 rgba(24,22,26,0.08), 0 2px 4px -2px rgba(24,22,26,0.05);
+  --shadow-lg: 0 12px 32px 0 rgba(24,22,26,0.12), 0 4px 8px -4px rgba(24,22,26,0.08);
 }
 
+.dark {
+  --bg: #1A1719;
+  --surface: #231F22;
+  --surface-2: #2E2A2D;
+  --surface-3: #3D373C;
+
+  --text-1: #F5F0F3;
+  --text-2: #9D959B;
+  --text-3: #635B62;
+
+  --border: #3D373C;
+  --border-strong: #524B51;
+
+  --accent: #E07B48;
+  --accent-2: #EF9468;
+  --accent-bg: #3D2318;
+
+  --income: #4ADE80;
+  --income-bg: #0F2E1F;
+  --expense: #F87171;
+  --expense-bg: #2D0E0E;
+  --investment: #818CF8;
+  --investment-bg: #1E1B4B;
+
+  --shadow-sm: 0 1px 3px 0 rgba(0,0,0,0.3);
+  --shadow: 0 4px 12px 0 rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 32px 0 rgba(0,0,0,0.5);
+}
+
+/* ─── Tailwind theme extension ───────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-text-1: var(--text-1);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-bg: var(--accent-bg);
+  --color-income: var(--income);
+  --color-income-bg: var(--income-bg);
+  --color-expense: var(--expense);
+  --color-expense-bg: var(--expense-bg);
+  --color-investment: var(--investment);
+  --color-investment-bg: var(--investment-bg);
+  --font-sans: var(--font-dm-sans), var(--font-inter), system-ui, sans-serif;
+  --radius-sm: var(--radius-sm);
+  --radius-DEFAULT: var(--radius);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Global Base Styles ─────────────────────────────── */
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  overscroll-behavior: none;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  min-height: 100%;
+  overscroll-behavior: none;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-3); }
+
+/* ─── Custom selection ───────────────────────────────── */
+::selection { background: var(--accent-bg); color: var(--accent); }
+
+/* ─── Utility classes ────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-elevated {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ─── Safe area padding for mobile ──────────────────── */
+.pb-safe { padding-bottom: env(safe-area-inset-bottom, 0px); }
+.pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+
+/* ─── Number font feature ────────────────────────────── */
+.tabular-nums { font-variant-numeric: tabular-nums; }
+.currency {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* ─── Bottom sheet overlay ───────────────────────────── */
+.sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(24, 22, 26, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 50;
+}
+
+/* ─── Gradient masks ─────────────────────────────────── */
+.fade-bottom {
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+/* ─── Recharts overrides ─────────────────────────────── */
+.recharts-tooltip-wrapper { outline: none; }
+.recharts-default-tooltip {
+  background: var(--surface) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  box-shadow: var(--shadow) !important;
 }
