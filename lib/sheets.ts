@@ -2,6 +2,10 @@ import { google } from "googleapis";
 import type { Transaction, Lend, Category, Config } from "./types";
 import { seedCategories } from "./categories";
 
+// ─── Init lock (prevents concurrent duplicate seeding) ────────
+let _initPromise: Promise<void> | null = null;
+let _initialized = false;
+
 // ─── Auth ─────────────────────────────────────────────────────
 
 function getAuth() {
@@ -41,6 +45,19 @@ const HEADERS = {
 // ─── Initialize Sheet ─────────────────────────────────────────
 
 export async function initializeSheets(): Promise<void> {
+  // Return immediately if already done
+  if (_initialized) return;
+  // If already in progress, wait for it to finish instead of running again
+  if (_initPromise) return _initPromise;
+
+  _initPromise = _doInitialize().finally(() => {
+    _initialized = true;
+    _initPromise = null;
+  });
+  return _initPromise;
+}
+
+async function _doInitialize(): Promise<void> {
   const sheets = getSheetsClient();
 
   // Get existing sheets
@@ -304,7 +321,16 @@ function rowToCategory(row: Record<string, string>): Category {
 export async function getCategories(): Promise<Category[]> {
   const rows = await getRows(SHEETS.CATEGORIES);
   const objects = rowsToObjects<Record<string, string>>(rows);
-  return objects.map(rowToCategory);
+  const all = objects.map(rowToCategory);
+
+  // Deduplicate by name — keep first occurrence of each (name, parent) combo
+  const seen = new Set<string>();
+  return all.filter((c) => {
+    const key = `${c.name}::${c.parent}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 export async function addCategory(cat: Category): Promise<void> {
